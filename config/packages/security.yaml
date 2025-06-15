@@ -16,9 +16,11 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            stateless: true    
+            stateless: true    # Avoid to save the cookies, and verify the api token every request
             json_login:
                 check_path: app_api_login
+            custom_authenticators:
+                - App\Security\ApiTokenAuthenticator
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -29,8 +31,9 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/api/registration, roles : PUBLIC_ACCESS }
+         - { path: ^/api/login, roles: PUBLIC_ACCESS }
+         - { path: ^/api, roles : ROLE_USER }
 
 when@test:
     security:
