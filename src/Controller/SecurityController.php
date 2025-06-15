@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route("/api", name: 'app_api_')]
@@ -47,6 +48,7 @@ final class SecurityController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
+    // Function to Login 
     #[Route('/login', name: 'login', methods: 'POST')]
     public function login(#[CurrentUser()] ?User $user): JsonResponse
     {
@@ -59,5 +61,47 @@ final class SecurityController extends AbstractController
             'apiToken' => $user->getApiToken(),
             'roles' => $user->getRoles(),
         ]);
+    }
+
+    // Function to see the user profil
+    #[ROUTE('/account/profil', name: 'account_profil', methods: 'POST')]
+    public function profil(Request $request): JsonResponse
+    {
+        $user = $this->serializer->deserialize($request->getContent(), User::class, 'json');
+
+        $user = $this->repository->findOneBy(["firstName" => $user->getFirstName()]);
+
+        if ($user) {
+            $responseData = $this->serializer->serialize($user, 'json');
+
+            return new JsonResponse($responseData, Response::HTTP_OK, [], true);
+        }
+
+        return new JsonResponse(["message" => "Any user found"], Response::HTTP_NOT_FOUND);
+    }
+
+    // Function to edit the user profil
+    #[ROUTE('/account/edit/{id}', name: 'account_edit', methods: 'PUT')]
+    public function edit(Request $request, $id): JsonResponse
+    {
+        
+        $user = $this->repository->findOneBy(["id" => $id]);
+        
+        if ($user) {
+            $user = $this->serializer->deserialize(
+                $request->getContent(),
+                User::class,
+                'json',
+                // To update the existing object instead of creating a new one
+                [AbstractNormalizer::OBJECT_TO_POPULATE => $user]
+            );
+            $user->setUpdatedAt(new DateTimeImmutable());
+
+            $this->manager->flush();
+
+            return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        }
+
+        return new JsonResponse(["message" => "Any user to edit found"], Response::HTTP_NOT_FOUND);
     }
 }
