@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use OpenApi\Attributes as OA;
 
 #[Route("/api", name: 'app_api_')]
 final class SecurityController extends AbstractController
@@ -26,8 +27,39 @@ final class SecurityController extends AbstractController
         private SerializerInterface $serializer
     ) {}
 
-    // Function to register a new user
-    #[Route('/registration', name: 'registration', methods: 'POST')]
+    #[Route('/registration', name: 'registration', methods: ['POST'])]
+    #[OA\Post(
+        path: '/api/registration',
+        summary: "Inscription d'un nouvel utilisateur",
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Données de l'utilisateur à inscrire",
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: "email", type: "string", example: "adresse@email.com"),
+                    new OA\Property(property: "password", type: "string", example: "Mot de passe"),
+                    new OA\Property(property: "firstName", type: "string", example: "Juan"),
+                    new OA\Property(property: "lastName", type: "string", example: "Gil"),
+                    new OA\Property(property: "guestNumber", type: "int", example: "15"),
+                ],
+                type: "object"
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: "Utilisateur inscrit avec succès",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "user", type: "string", example: "Nom d'utilisateur"),
+                        new OA\Property(property: "apiToken", type: "string", example: "31a023e212f116124a36af14ea0c1c3806eb9378"),
+                        new OA\Property(property: "roles", type: "array", items: new OA\Items(type: "string", example: "ROLE_USER"))
+                    ],
+                    type: "object"
+                )
+            )
+        ]
+    )]
     public function register(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         // To qet the content and transforme it into an User object
@@ -49,7 +81,7 @@ final class SecurityController extends AbstractController
     }
 
     // Function to Login 
-    #[Route('/login', name: 'login', methods: 'POST')]
+    #[Route('/login', name: 'login', methods: ['POST'])]
     public function login(#[CurrentUser()] ?User $user): JsonResponse
     {
         if (null === $user) {
@@ -64,7 +96,7 @@ final class SecurityController extends AbstractController
     }
 
     // Function to see the user profil
-    #[ROUTE('/account/profil', name: 'account_profil', methods: 'POST')]
+    #[Route('/account/profil', name: 'account_profil', methods: ['POST'])]
     public function profil(Request $request): JsonResponse
     {
         $user = $this->serializer->deserialize($request->getContent(), User::class, 'json');
@@ -81,12 +113,12 @@ final class SecurityController extends AbstractController
     }
 
     // Function to edit the user profil
-    #[ROUTE('/account/edit/{id}', name: 'account_edit', methods: 'PUT')]
+    #[Route('/account/edit/{id}', name: 'account_edit', methods: ['PUT'])]
     public function edit(Request $request, $id): JsonResponse
     {
-        
+
         $user = $this->repository->findOneBy(["id" => $id]);
-        
+
         if ($user) {
             $user = $this->serializer->deserialize(
                 $request->getContent(),
