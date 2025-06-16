@@ -16,6 +16,9 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Attributes as OA;
+use OpenApi\Attributes\RequestBody;
+
+use function PHPSTORM_META\type;
 
 #[Route("/api", name: 'app_api_')]
 final class SecurityController extends AbstractController
@@ -30,10 +33,11 @@ final class SecurityController extends AbstractController
     #[Route('/registration', name: 'registration', methods: ['POST'])]
     #[OA\Post(
         path: '/api/registration',
-        summary: "Inscription d'un nouvel utilisateur",
+        summary: "Register a new user",
         requestBody: new OA\RequestBody(
             required: true,
-            description: "Données de l'utilisateur à inscrire",
+            description: "user data required to register",
+            // The content with the data that we must send in the request
             content: new OA\JsonContent(
                 properties: [
                     new OA\Property(property: "email", type: "string", example: "adresse@email.com"),
@@ -48,7 +52,7 @@ final class SecurityController extends AbstractController
         responses: [
             new OA\Response(
                 response: 201,
-                description: "Utilisateur inscrit avec succès",
+                description: "User registered success",
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(property: "user", type: "string", example: "Nom d'utilisateur"),
@@ -82,6 +86,37 @@ final class SecurityController extends AbstractController
 
     // Function to Login 
     #[Route('/login', name: 'login', methods: ['POST'])]
+    #[
+        OA\Post(
+            path: '/api/login',
+            summary: 'Login with a user',
+            requestBody: new OA\RequestBody(
+                required: true,
+                description: "User data required to login",
+                // The content with the data that we must send in the request
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "username", type: "string", example: "adresse@email.com"),
+                        new OA\Property(property: "password", type: "string", example: "Mot de passe"),
+                    ]
+                )
+            ),
+            responses: [
+                new OA\Response(
+                    response: 200,
+                    description: "Loged in success",
+                    content: new OA\JsonContent(
+                        properties: [
+                            new OA\Property(property: "user", type: "string", example: "Juanito"),
+                            new OA\Property(property: "apiToken", type: "string", example: "31a023e212f116124a36af14ea0c1c3806eb9378"),
+                            new OA\Property(property: "roles", type: "array", items: new OA\Items(type:"string",  example: "ROLE_USER")),
+                        ]
+                    )
+                )
+            ]
+        )
+
+    ]
     public function login(#[CurrentUser()] ?User $user): JsonResponse
     {
         if (null === $user) {
