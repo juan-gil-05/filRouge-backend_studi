@@ -14,8 +14,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use OpenApi\Attributes as OA;
 
-#[ROUTE("api/food", name:'api_food_')]
+#[ROUTE("api/food", name: 'api_food_')]
 final class FoodController extends AbstractController
 {
     public function __construct(
@@ -27,6 +28,37 @@ final class FoodController extends AbstractController
 
     // Create
     #[ROUTE("/", name: 'new', methods: 'POST')]
+    #[OA\Post(
+        path: '/api/food/',
+        summary: "Register a new Food",
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Food data required to register",
+            // The content with the data that we must send in the request
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: "title", type: "string", example: "bourguignon"),
+                    new OA\Property(property: "description", type: "string", example: "The best Food"),
+                    new OA\Property(property: "price", type: "string", example: "1.50"),
+                ],
+                type: "object"
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: "Food registered success",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "name", type: "string", example: "Food name"),
+                        new OA\Property(property: "description", type: "string", example: "Food description"),
+                        new OA\Property(property: "price", type: "string", example: "1.50"),
+                    ],
+                    type: "object"
+                )
+            )
+        ]
+    )]
     public function new(Request $request): JsonResponse
     {
         // To get the content of the request and deserialize it into a food object 
@@ -53,6 +85,38 @@ final class FoodController extends AbstractController
 
     // Read
     #[ROUTE("/{id}", name: 'show', methods: 'GET')]
+    #[OA\Get(
+        path: '/api/food/{id}',
+        summary: "Show a Food",
+        // The parameters section is already called autommatically
+        // parameters: [
+        //     new OA\Parameter(
+        //         name: 'id',
+        //         in: 'query',
+        //         required:true,
+        //         description: 'Food ID to show',
+        //         schema: new OA\Schema(type: 'integer')
+        //     )
+        // ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Food found",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "name", type: "string", example: "Food name"),
+                        new OA\Property(property: "description", type: "string", example: "Food description"),
+                        new OA\Property(property: "price", type: "string", example: "1.50"),
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Food not found",
+            )
+        ]
+    )]
     public function show($id): JsonResponse
     {
         // To search the object by ID
@@ -70,6 +134,50 @@ final class FoodController extends AbstractController
 
     // Update
     #[ROUTE("/{id}", name: 'edit', methods: 'PUT')]
+    #[OA\Put(
+        path: '/api/food/{id}',
+        summary: "Edit a Food",
+        // The parameters section is already called autommatically
+        // parameters: [
+        //     new OA\Parameter(
+        //         name: 'id',
+        //         in: 'query',
+        //         required:true,
+        //         description: 'Food ID to Edit',
+        //         schema: new OA\Schema(type: 'integer')
+        //     )
+        // ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Food data to edit",
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property("title", type: "string", example: "NEW Food name"),
+                    new OA\Property(property: "description", type: "string", example: "NEW Food description"),
+                    new OA\Property(property: "price", type: "string", example: "9.20"),
+                ],
+                type: "object"
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 204,
+                description: "Food edited successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "name", type: "string", example: "Food name"),
+                        new OA\Property(property: "description", type: "string", example: "Food description"),
+                        new OA\Property(property: "price", type: "string", example: "9.20"),
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Food not found",
+            )
+        ]
+    )]
     public function edit($id, Request $request): Response
     {
         // To search the object by ID
@@ -97,6 +205,31 @@ final class FoodController extends AbstractController
 
     // Delete
     #[ROUTE("/{id}", name: 'delete', methods: 'DELETE')]
+    #[OA\Delete(
+        path: '/api/food/{id}',
+        summary: "Delete a Food",
+        // The parameters section is already called autommatically
+        // parameters: [
+        //     new OA\Parameter(
+        //         name: 'id',
+        //         in: 'query',
+        //         required:true,
+        //         description: 'Food ID to Delete',
+        //         schema: new OA\Schema(type: 'integer')
+        //     )
+        // ],
+        responses: [
+            new OA\Response(
+                response: 204,
+                description: "Food deleted successfully",
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Food not found",
+            )
+        ]
+
+    )]
     public function delete($id): Response
     {
 
