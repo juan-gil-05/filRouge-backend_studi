@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Restaurant;
 use App\Repository\RestaurantRepository;
 use DateTimeImmutable;
-use Doctrine\DBAL\Types\JsonType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,6 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use OpenApi\Attributes as OA;
 
 #[ROUTE('api/restaurant', name: 'api_restaurant_')]
 final class RestaurantController extends AbstractController
@@ -28,6 +28,37 @@ final class RestaurantController extends AbstractController
 
     // Create
     #[ROUTE("/", name: 'new', methods: 'POST')]
+    #[OA\Post(
+        path: '/api/restaurant/',
+        summary: "Register a new restaurant",
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Restaurant data required to register",
+            // The content with the data that we must send in the request
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: "name", type: "string", example: "Quai Antique"),
+                    new OA\Property(property: "description", type: "string", example: "The best restaurant"),
+                    new OA\Property(property: "maxGuest", type: "int", example: "10"),
+                ],
+                type: "object"
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: "Restaurant registered success",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "name", type: "string", example: "Restaurant name"),
+                        new OA\Property(property: "description", type: "string", example: "Restaurant description"),
+                        new OA\Property(property: "maxGuest", type: "int", example: "10"),
+                    ],
+                    type: "object"
+                )
+            )
+        ]
+    )]
     public function new(Request $request): JsonResponse
     {
         // To get the content of the request and deserialize it into a Restaurant object 
@@ -54,6 +85,38 @@ final class RestaurantController extends AbstractController
 
     // Read
     #[ROUTE("/{id}", name: 'show', methods: 'GET')]
+    #[OA\Get(
+        path: '/api/restaurant/{id}',
+        summary: "Show a restaurant",
+        // The parameters section is already called autommatically
+        // parameters: [
+        //     new OA\Parameter(
+        //         name: 'id',
+        //         in: 'query',
+        //         required:true,
+        //         description: 'Restaurant ID to show',
+        //         schema: new OA\Schema(type: 'integer')
+        //     )
+        // ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Restaurant found",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "name", type: "string", example: "Restaurant name"),
+                        new OA\Property(property: "description", type: "string", example: "Restaurant description"),
+                        new OA\Property(property: "maxGuest", type: "int", example: "max number of guests"),
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Restaurant not found",
+            )
+        ]
+    )]
     public function show($id): JsonResponse
     {
         // To search the object by ID
@@ -71,6 +134,50 @@ final class RestaurantController extends AbstractController
 
     // Update
     #[ROUTE("/{id}", name: 'edit', methods: 'PUT')]
+    #[OA\Put(
+        path: '/api/restaurant/{id}',
+        summary: "Edit a restaurant",
+        // The parameters section is already called autommatically
+        // parameters: [
+        //     new OA\Parameter(
+        //         name: 'id',
+        //         in: 'query',
+        //         required:true,
+        //         description: 'Restaurant ID to Edit',
+        //         schema: new OA\Schema(type: 'integer')
+        //     )
+        // ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Restaurant data to edit",
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property("name", type: "string", example: "NEW Restaurant name"),
+                    new OA\Property(property: "description", type: "string", example: "NEW Restaurant description"),
+                    new OA\Property(property: "maxGuest", type: "int", example: "5"),
+                ],
+                type: "object"
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 204,
+                description: "Restaurant edited successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "name", type: "string", example: "Restaurant name edited"),
+                        new OA\Property(property: "description", type: "string", example: "Restaurant description edited"),
+                        new OA\Property(property: "maxGuest", type: "int", example: "10"),
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Restaurant not found",
+            )
+        ]
+    )]
     public function edit($id, Request $request): Response
     {
         // To search the object by ID
@@ -98,6 +205,31 @@ final class RestaurantController extends AbstractController
 
     // Delete
     #[ROUTE("/{id}", name: 'delete', methods: 'DELETE')]
+    #[OA\Delete(
+        path: '/api/restaurant/{id}',
+        summary: "Delete a restaurant",
+        // The parameters section is already called autommatically
+        // parameters: [
+        //     new OA\Parameter(
+        //         name: 'id',
+        //         in: 'query',
+        //         required:true,
+        //         description: 'Restaurant ID to Delete',
+        //         schema: new OA\Schema(type: 'integer')
+        //     )
+        // ],
+        responses: [
+            new OA\Response(
+                response: 204,
+                description: "Restaurant deleted successfully",
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Restaurant not found",
+            )
+        ]
+
+    )]
     public function delete($id): Response
     {
 
