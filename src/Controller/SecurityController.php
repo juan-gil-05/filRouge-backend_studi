@@ -27,7 +27,8 @@ final class SecurityController extends AbstractController
     public function __construct(
         private EntityManagerInterface $manager,
         private UserRepository $repository,
-        private SerializerInterface $serializer
+        private SerializerInterface $serializer,
+        private UserPasswordHasherInterface $passwordHasher
     ) {}
 
     #[Route('/registration', name: 'registration', methods: ['POST'])]
@@ -64,12 +65,12 @@ final class SecurityController extends AbstractController
             )
         ]
     )]
-    public function register(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
+    public function register(Request $request): JsonResponse
     {
         // To qet the content and transforme it into an User object
         $user = $this->serializer->deserialize($request->getContent(), User::class, 'json');
         // To hash the password
-        $user->setPassword($passwordHasher->hashPassword($user, $user->getPassword()));
+        $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
         $user->setCreatedAt(new DateTimeImmutable());
 
         // To save the user into DB
@@ -109,7 +110,7 @@ final class SecurityController extends AbstractController
                         properties: [
                             new OA\Property(property: "user", type: "string", example: "Juanito"),
                             new OA\Property(property: "apiToken", type: "string", example: "31a023e212f116124a36af14ea0c1c3806eb9378"),
-                            new OA\Property(property: "roles", type: "array", items: new OA\Items(type:"string",  example: "ROLE_USER")),
+                            new OA\Property(property: "roles", type: "array", items: new OA\Items(type: "string",  example: "ROLE_USER")),
                         ]
                     )
                 )
@@ -131,12 +132,50 @@ final class SecurityController extends AbstractController
     }
 
     // Function to see the user profil
-    #[Route('/account/profil', name: 'account_profil', methods: ['POST'])]
+    #[Route('/account/profil', name: 'account_profil', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/account/profil',
+        summary: "Show User",
+        parameters: [
+            new OA\Parameter(
+                name: 'firstName',
+                in: 'query',
+                required: true,
+                description: "Find user by User first name",
+                schema: new OA\Schema(type: 'string')
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "User found",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property("id", type: 'int', example: 123),
+                        new OA\Property("email", type: 'string', example: "User email"),
+                        new OA\Property("userIdentifier", type: 'string', example: "User identifier"),
+                        new OA\Property("password", type: 'string', example: "$2y$13TBOzSmOit2w8JgzriUQPocdhYWe/VYUf1a"),
+                        new OA\Property("apiToken", type: 'string', example: "ba253a56c8c76de85031ad7acbdaf23a4d71b488"),
+                        new OA\Property("firstName", type: 'string', example: "User first name"),
+                        new OA\Property("lastName", type: 'string', example: "User last name"),
+                        new OA\Property("guestNumber", type: 'int', example: 14),
+                        new OA\Property("allergy", type: 'string', example: "User allergies"),
+
+                    ],
+                    type: 'object'
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: "User not found",
+            )
+        ]
+    )]
     public function profil(Request $request): JsonResponse
     {
-        $user = $this->serializer->deserialize($request->getContent(), User::class, 'json');
+        $firstName = $request->query->get('firstName');
 
-        $user = $this->repository->findOneBy(["firstName" => $user->getFirstName()]);
+        $user = $this->repository->findOneBy(["firstName" => $firstName]);
 
         if ($user) {
             $responseData = $this->serializer->serialize($user, 'json');
@@ -149,6 +188,62 @@ final class SecurityController extends AbstractController
 
     // Function to edit the user profil
     #[Route('/account/edit/{id}', name: 'account_edit', methods: ['PUT'])]
+    #[OA\Put(
+        path: '/api/account/edit/{id}',
+        summary: "Edit a user",
+        // The parameters section is already called autommatically
+        // parameters: [
+        //     new OA\Parameter(
+        //         name: 'id',
+        //         in: 'query',
+        //         required:true,
+        //         description: 'User ID to Edit',
+        //         schema: new OA\Schema(type: 'integer')
+        //     )
+        // ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "user data required to edit",
+            // The content with the data that we must send in the request
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: "email", type: "string", example: "newAdresse@email.com"),
+                    new OA\Property(property: "password", type: "string", example: "New Mot de passe"),
+                    new OA\Property(property: "firstName", type: "string", example: "Juanito"),
+                    new OA\Property(property: "lastName", type: "string", example: "Gil"),
+                    new OA\Property(property: "guestNumber", type: "int", example: 7),
+                ],
+                type: "object"
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 204,
+                description: "User edited successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property("id", type: 'int', example: 123),
+                        new OA\Property("email", type: 'string', example: "new User email"),
+                        new OA\Property("userIdentifier", type: 'string', example: "new User identifier"),
+                        new OA\Property("password", type: 'string', example: "$2y$13TBOzSmOit2w8JgzriUQPocdhYWe/VYUf1a"),
+                        new OA\Property("apiToken", type: 'string', example: "ba253a56c8c76de85031ad7acbdaf23a4d71b488"),
+                        new OA\Property("firstName", type: 'string', example: "new User first name"),
+                        new OA\Property("lastName", type: 'string', example: "new User last name"),
+                        new OA\Property("guestNumber", type: 'int', example: 14),
+                        new OA\Property("allergy", type: 'string', example: "new User allergies"),
+
+                    ],
+                    type: 'object'
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: "User not found",
+            )
+        ]
+
+
+    )]
     public function edit(Request $request, $id): JsonResponse
     {
 
@@ -162,6 +257,8 @@ final class SecurityController extends AbstractController
                 // To update the existing object instead of creating a new one
                 [AbstractNormalizer::OBJECT_TO_POPULATE => $user]
             );
+            // To hash the password
+            $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
             $user->setUpdatedAt(new DateTimeImmutable());
 
             $this->manager->flush();
