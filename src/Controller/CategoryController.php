@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use OpenApi\Attributes as OA;
 
 #[ROUTE("api/category", name: 'api_category_')]
 final class CategoryController extends AbstractController
@@ -27,6 +28,33 @@ final class CategoryController extends AbstractController
 
     // Create
     #[ROUTE("/", name: 'new', methods: 'POST')]
+    #[OA\Post(
+        path: '/api/category/',
+        summary: "Register a new Category",
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Category data required to register",
+            // The content with the data that we must send in the request
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: "title", type: "string", example: "Entree"),
+                ],
+                type: "object"
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: "Category registered success",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "title", type: "string", example: "Category name"),
+                    ],
+                    type: "object"
+                )
+            )
+        ]
+    )]
     public function new(Request $request): JsonResponse
     {
         // To get the content of the request and deserialize it into a category object 
@@ -53,6 +81,36 @@ final class CategoryController extends AbstractController
 
     // Read
     #[ROUTE("/{id}", name: 'show', methods: 'GET')]
+    #[OA\Get(
+        path: '/api/category/{id}',
+        summary: "Show a Category",
+        // The parameters section is already called autommatically
+        // parameters: [
+        //     new OA\Parameter(
+        //         name: 'id',
+        //         in: 'query',
+        //         required:true,
+        //         description: 'Category ID to show',
+        //         schema: new OA\Schema(type: 'integer')
+        //     )
+        // ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Category found",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "title", type: "string", example: "Category name"),
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Category not found",
+            )
+        ]
+    )]
     public function show($id): JsonResponse
     {
         // To search the object by ID
@@ -70,6 +128,46 @@ final class CategoryController extends AbstractController
 
     // Update
     #[ROUTE("/{id}", name: 'edit', methods: 'PUT')]
+    #[OA\Put(
+        path: '/api/category/{id}',
+        summary: "Edit a Category",
+        // The parameters section is already called autommatically
+        // parameters: [
+        //     new OA\Parameter(
+        //         name: 'id',
+        //         in: 'query',
+        //         required:true,
+        //         description: 'Category ID to Edit',
+        //         schema: new OA\Schema(type: 'integer')
+        //     )
+        // ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Category data to edit",
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: "title", type: "string", example: "NEW Category name"),
+                ],
+                type: "object"
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 204,
+                description: "Category edited successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "title", type: "string", example: "Category name edited"),
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Category not found",
+            )
+        ]
+    )]
     public function edit($id, Request $request): Response
     {
         // To search the object by ID
@@ -97,6 +195,31 @@ final class CategoryController extends AbstractController
 
     // Delete
     #[ROUTE("/{id}", name: 'delete', methods: 'DELETE')]
+    #[OA\Delete(
+        path: '/api/category/{id}',
+        summary: "Delete a Category",
+        // The parameters section is already called autommatically
+        // parameters: [
+        //     new OA\Parameter(
+        //         name: 'id',
+        //         in: 'query',
+        //         required:true,
+        //         description: 'Category ID to Delete',
+        //         schema: new OA\Schema(type: 'integer')
+        //     )
+        // ],
+        responses: [
+            new OA\Response(
+                response: 204,
+                description: "Category deleted successfully",
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Category not found",
+            )
+        ]
+
+    )]
     public function delete($id): Response
     {
 
