@@ -37,6 +37,10 @@ class Menu
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'menus')]
     private Collection $category;
 
+    #[ORM\ManyToOne(inversedBy: 'menus')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Restaurant $restaurant = null;
+
     public function __construct()
     {
         $this->category = new ArrayCollection();
@@ -127,6 +131,18 @@ class Menu
     public function removeCategory(Category $category): static
     {
         $this->category->removeElement($category);
+
+        return $this;
+    }
+
+    public function getRestaurant(): ?Restaurant
+    {
+        return $this->restaurant;
+    }
+
+    public function setRestaurant(?Restaurant $restaurant): static
+    {
+        $this->restaurant = $restaurant;
 
         return $this;
     }

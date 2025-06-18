@@ -53,10 +53,17 @@ class Restaurant
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
+    /**
+     * @var Collection<int, Menu>
+     */
+    #[ORM\OneToMany(targetEntity: Menu::class, mappedBy: 'restaurant', orphanRemoval: true)]
+    private Collection $menus;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
         $this->pictures = new ArrayCollection();
+        $this->menus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -216,6 +223,36 @@ class Restaurant
     public function setOwner(?User $owner): static
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Menu>
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): static
+    {
+        if (!$this->menus->contains($menu)) {
+            $this->menus->add($menu);
+            $menu->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): static
+    {
+        if ($this->menus->removeElement($menu)) {
+            // set the owning side to null (unless already changed)
+            if ($menu->getRestaurant() === $this) {
+                $menu->setRestaurant(null);
+            }
+        }
 
         return $this;
     }
