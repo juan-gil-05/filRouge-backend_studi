@@ -8,18 +8,21 @@ use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class PictureFixtures extends Fixture implements DependentFixtureInterface
 {
+    public const PICTURE_NB_TUPLES = 20;
+
     public function load(ObjectManager $manager): void
     {
-
-        for ($i = 1; $i <= 20; $i++) {
+        $faker = Factory::create();
+        for ($i = 1; $i <= self::PICTURE_NB_TUPLES; $i++) {
             $picture = (new Picture())
-                ->setName("Picture n°$i")
+                ->setName($faker->word())
                 ->setSlug("slug_$i")
                 // Foreign key
-                ->setRestaurant($this->getReference("restaurant" . random_int(1, 20), Restaurant::class))
+                ->setRestaurant($this->getReference(RestaurantFixtures::RESTAUTANT_REFERENCE . random_int(1, 20), Restaurant::class))
                 ->setCreatedAt(new DateTimeImmutable());
 
             $manager->persist($picture);
