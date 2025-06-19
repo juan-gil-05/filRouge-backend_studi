@@ -16,9 +16,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Attributes as OA;
-use OpenApi\Attributes\RequestBody;
 
-use function PHPSTORM_META\type;
 
 #[Route("/api", name: 'app_api_')]
 final class SecurityController extends AbstractController
@@ -71,7 +69,7 @@ final class SecurityController extends AbstractController
         $user = $this->serializer->deserialize($request->getContent(), User::class, 'json');
         // To hash the password
         $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
-        $user->setCreatedAt(new DateTimeImmutable());
+        
 
         // To save the user into DB
         $this->manager->persist($user);

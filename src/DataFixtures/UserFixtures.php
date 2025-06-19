@@ -12,6 +12,7 @@ use Faker\Factory;
 class UserFixtures extends Fixture
 {
     public const USER_NB_TUPLES = 20;
+    public const USER_REFERENCE = "user";
 
     public function __construct(private UserPasswordHasherInterface $passwordHasher) {}
 
@@ -29,6 +30,7 @@ class UserFixtures extends Fixture
             $user->setPassword($this->passwordHasher->hashPassword($user, "password $i"));
 
             $manager->persist($user);
+            $this->addReference(self::USER_REFERENCE.$i, $user);
         }
         $manager->flush();
     }
