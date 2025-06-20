@@ -2,9 +2,15 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\User;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Serializer\Encoder\JsonDecode;
+use Symfony\Component\Serializer\Encoder\JsonEncode;
 
-class SmokeTest extends WebTestCase {
+class SmokeTest extends WebTestCase
+{
 
     public function testApiDocUrlSuccessful(): void
     {
@@ -22,4 +28,13 @@ class SmokeTest extends WebTestCase {
         self::assertResponseStatusCodeSame("401");
     }
 
+
+    public static function allApiUrl(): array
+    {
+        return [
+            ["Get", "/api/doc"],
+            ["Post", "/api/category/"],
+            ["Get", "/api/category/{id}"],
+        ];
+    }
 }
