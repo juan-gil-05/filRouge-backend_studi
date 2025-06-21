@@ -124,7 +124,7 @@ final class RestaurantController extends AbstractController
 
         if ($restaurant) {
             // To serialize the Restaurant object, in order to send it as a JsonResponse 
-            $responseData = $this->serializer->serialize($restaurant, 'json');
+            $responseData = $this->serializer->serialize($restaurant, 'json', ['groups' => ['Restaurant:read']]);
 
             return new JsonResponse($responseData, Response::HTTP_OK, [], true);
         }
@@ -152,7 +152,7 @@ final class RestaurantController extends AbstractController
             description: "Restaurant data to edit",
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property("name", type: "string", example: "NEW Restaurant name"),
+                    new OA\Property(property: "name", type: "string", example: "NEW Restaurant name"),
                     new OA\Property(property: "description", type: "string", example: "NEW Restaurant description"),
                     new OA\Property(property: "maxGuest", type: "int", example: "5"),
                 ],

@@ -7,48 +7,60 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: RestaurantRepository::class)]
 class Restaurant
 {
+    #[Groups(["Restaurant:read"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["Restaurant:read"])]
     #[ORM\Column(length: 128)]
     private ?string $name = null;
 
+    #[Groups(["Restaurant:read"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    #[Groups(["Restaurant:read"])]
     #[ORM\Column]
     private array $amOpeningTime = [];
 
+    #[Groups(["Restaurant:read"])]
     #[ORM\Column]
     private array $pmOpeningTime = [];
 
+    #[Groups(["Restaurant:read"])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $maxGuest = null;
 
+    #[Groups(["Restaurant:read"])]
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[Groups(["Restaurant:read"])]
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[Groups(["Restaurant:read"])]
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'restaurant')]
     private Collection $reservations;
 
+    #[Groups(["Restaurant:read"])]
     /**
      * @var Collection<int, Picture>
      */
     #[ORM\OneToMany(targetEntity: Picture::class, mappedBy: 'restaurant')]
     private Collection $pictures;
 
+    #[Groups(["Restaurant:read"])]
     #[ORM\ManyToOne(inversedBy: 'restaurants')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
