@@ -27,7 +27,7 @@ class UserFixtures extends Fixture
                 ->setGuestNumber($faker->numberBetween(0, 10))
                 ->setCreatedAt(new DateTimeImmutable());
 
-            $user->setPassword($this->passwordHasher->hashPassword($user, "password $i"));
+            $user->setPassword($this->passwordHasher->hashPassword($user, "password$i"));
 
             $manager->persist($user);
             $this->addReference(self::USER_REFERENCE.$i, $user);

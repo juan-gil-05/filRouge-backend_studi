@@ -106,7 +106,9 @@ final class SecurityController extends AbstractController
                     description: "Loged in success",
                     content: new OA\JsonContent(
                         properties: [
-                            new OA\Property(property: "user", type: "string", example: "Juanito"),
+                            new OA\Property(property: "userId", type: "int", example: 123),
+                            new OA\Property(property: "firstName", type: "string", example: "Juanito"),
+                            new OA\Property(property: "userIdentifier", type: "string", example: "Juanito@mail.com"),
                             new OA\Property(property: "apiToken", type: "string", example: "31a023e212f116124a36af14ea0c1c3806eb9378"),
                             new OA\Property(property: "roles", type: "array", items: new OA\Items(type: "string",  example: "ROLE_USER")),
                         ]
@@ -123,7 +125,9 @@ final class SecurityController extends AbstractController
         }
 
         return new JsonResponse([
-            'user'  => $user->getUserIdentifier(),
+            'userId' => $user->getId(),
+            'firstName' => $user->getFirstName(),
+            'userIdentifier'  => $user->getUserIdentifier(),
             'apiToken' => $user->getApiToken(),
             'roles' => $user->getRoles(),
         ]);
