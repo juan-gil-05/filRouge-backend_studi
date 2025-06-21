@@ -65,11 +65,11 @@ final class SecurityController extends AbstractController
     )]
     public function register(Request $request): JsonResponse
     {
-        // To qet the content and transforme it into an User object
+        // To get the content and transforme it into an User object
         $user = $this->serializer->deserialize($request->getContent(), User::class, 'json');
         // To hash the password
         $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
-        
+        $user->setCreatedAt(new DateTimeImmutable());
 
         // To save the user into DB
         $this->manager->persist($user);
