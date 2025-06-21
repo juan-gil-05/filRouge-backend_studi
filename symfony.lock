@@ -47,6 +47,9 @@
             "migrations/.gitignore"
         ]
     },
+    "liip/test-fixtures-bundle": {
+        "version": "3.4.0"
+    },
     "nelmio/api-doc-bundle": {
         "version": "5.3",
         "recipe": {
