@@ -39,7 +39,7 @@ class PictureController extends AbstractController
                     properties: [
                         new OA\Property(property: "name", type: "string", example: "foodImage"),
                         new OA\Property(property: "slug", type: "string", example: "image_slug"),
-                        new OA\Property(property: "restaurantId", type: "int", example: 41, description: "Here you have to use a valid restaurant id"),
+                        new OA\Property(property: "restaurantId", type: "int", example: 67, description: "Here you have to use a valid restaurant id"),
                     ],
                     type: "object"
                 )
@@ -52,7 +52,7 @@ class PictureController extends AbstractController
                         properties: [
                             new OA\Property(property: "name", type: "string", example: "picture name"),
                             new OA\Property(property: "slug", type: "string", example: "picture_slug"),
-                            new OA\Property(property: "restaurantId", type: "int", example: 41, description: "Here you have to use a valid restaurant id"),
+                            new OA\Property(property: "restaurantId", type: "int", example: 67, description: "Here you have to use a valid restaurant id"),
                         ],
                         type: "object"
                     )

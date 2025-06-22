@@ -43,7 +43,7 @@ final class RestaurantController extends AbstractController
                     new OA\Property(property: "name", type: "string", example: "Quai Antique"),
                     new OA\Property(property: "description", type: "string", example: "The best restaurant"),
                     new OA\Property(property: "maxGuest", type: "int", example: 10),
-                    new OA\Property(property: "owner", type: "int", example: 54, description:"Here you have to use a valid user id"),
+                    new OA\Property(property: "owner", type: "int", example: 65, description:"Here you have to use a valid user id"),
                 ],
                 type: "object"
             )
@@ -57,7 +57,7 @@ final class RestaurantController extends AbstractController
                         new OA\Property(property: "name", type: "string", example: "Restaurant name"),
                         new OA\Property(property: "description", type: "string", example: "Restaurant description"),
                         new OA\Property(property: "maxGuest", type: "int", example: 10),
-                        new OA\Property(property: "owner", type: "int", example: 54, description:"Here you have to use a valid user id"),
+                        new OA\Property(property: "owner", type: "int", example: 65, description:"Here you have to use a valid user id"),
 
                     ],
                     type: "object"

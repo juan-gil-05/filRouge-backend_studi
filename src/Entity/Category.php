@@ -27,12 +27,14 @@ class Category
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[Groups(["Menu:read", "Food:read"])]
     /**
      * @var Collection<int, Food>
      */
     #[ORM\ManyToMany(targetEntity: Food::class, mappedBy: 'category')]
     private Collection $food;
 
+    #[Groups(["Menu:read", "Food:read"])]
     /**
      * @var Collection<int, Menu>
      */

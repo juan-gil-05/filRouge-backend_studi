@@ -40,7 +40,7 @@ final class MenuController extends AbstractController
                     new OA\Property(property: "title", type: "string", example: "Tasteville"),
                     new OA\Property(property: "description", type: "string", example: "This is the best menu"),
                     new OA\Property(property: "price", type: "string", example: "21.99"),
-                    new OA\Property(property: "restaurantId", type: "int", example: 52, description: "Here you have to use a valid Restaurant id"),
+                    new OA\Property(property: "restaurantId", type: "int", example: 75, description: "Here you have to use a valid Restaurant id"),
                 ],
                 type: "object"
             )
@@ -54,7 +54,7 @@ final class MenuController extends AbstractController
                         new OA\Property(property: "title", type: "string", example: "Menu title"),
                         new OA\Property(property: "description", type: "string", example: "Menu description"),
                         new OA\Property(property: "price", type: "string", example: "14.99"),
-                        new OA\Property(property: "restaurantId", type: "int", example: 52, description: "Here you have to use a valid Restaurant id"),
+                        new OA\Property(property: "restaurantId", type: "int", example: 75, description: "Here you have to use a valid Restaurant id"),
 
                     ],
                     type: "object"

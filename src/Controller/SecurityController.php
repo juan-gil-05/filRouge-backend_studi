@@ -76,11 +76,9 @@ final class SecurityController extends AbstractController
         // To send data to DB
         $this->manager->flush();
 
-        return new JsonResponse([
-            "user" => $user->getUserIdentifier(),
-            'apiToken' => $user->getApiToken(),
-            'role' => $user->getRoles()
-        ], Response::HTTP_CREATED);
+        $responseData = $this->serializer->serialize($user, 'json', ["groups" => ["User:read"]]);
+
+        return new JsonResponse($responseData, Response::HTTP_CREATED, [], true);
     }
 
     // Function to Login 
@@ -180,7 +178,7 @@ final class SecurityController extends AbstractController
         $user = $this->repository->findOneBy(["firstName" => $firstName]);
 
         if ($user) {
-            $responseData = $this->serializer->serialize($user, 'json');
+            $responseData = $this->serializer->serialize($user, 'json', ["groups" => ["User:read"]]);
 
             return new JsonResponse($responseData, Response::HTTP_OK, [], true);
         }

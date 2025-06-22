@@ -12,13 +12,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 class Menu
 {
-    #[Groups(["Menu:read"])]
+    #[Groups(["Menu:read", "Restaurant:read"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["Menu:read"])]
+    #[Groups(["Menu:read", "Restaurant:read"])]
     #[ORM\Column(length: 128)]
     private ?string $title = null;
 
@@ -26,7 +26,7 @@ class Menu
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[Groups(["Menu:read"])]
+    #[Groups(["Menu:read", "Restaurant:read"])]
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
     private ?string $price = null;
 

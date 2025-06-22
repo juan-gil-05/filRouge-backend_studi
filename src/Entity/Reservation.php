@@ -10,21 +10,21 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 class Reservation
 {
-    #[Groups(["Reservation:read"])]
+    #[Groups(["Reservation:read", "User:read"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["Reservation:read"])]
+    #[Groups(["Reservation:read", "User:read"])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $guestNumber = null;
 
-    #[Groups(["Reservation:read"])]
+    #[Groups(["Reservation:read", "User:read"])]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date = null;
 
-    #[Groups(["Reservation:read"])]
+    #[Groups(["Reservation:read", "User:read"])]
     #[ORM\Column(length: 10)]
     private ?string $hour = null;
 

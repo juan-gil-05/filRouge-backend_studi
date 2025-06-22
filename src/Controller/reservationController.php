@@ -42,8 +42,8 @@ final class reservationController extends AbstractController
                     new OA\Property(property: "guestNumber", type: "int", example: 50),
                     new OA\Property(property: "date", type: "string", example: "2025-10-10"),
                     new OA\Property(property: "hour", type: "string", example: "14:30:00"),
-                    new OA\Property(property: "restaurantId", type: "int", example: 54, description: "Here you have to use a valid Restaurant id"),
-                    new OA\Property(property: "clientId", type: "int", example: 54, description: "Here you have to use a valid User id"),
+                    new OA\Property(property: "restaurantId", type: "int", example: 70, description: "Here you have to use a valid Restaurant id"),
+                    new OA\Property(property: "clientId", type: "int", example: 70, description: "Here you have to use a valid User id"),
                 ],
                 type: "object"
             )
@@ -57,8 +57,8 @@ final class reservationController extends AbstractController
                         new OA\Property(property: "guestNumber", type: "int", example: 60),
                         new OA\Property(property: "date", type: "string", example: "Date of the reservation"),
                         new OA\Property(property: "hour", type: "string", example: "Hour of the reservation"),
-                        new OA\Property(property: "restaurantId", type: "int", example: 54, description: "Here you have to use a valid Restaurant id"),
-                        new OA\Property(property: "clientId", type: "int", example: 54, description: "Here you have to use a valid User id"),
+                        new OA\Property(property: "restaurantId", type: "int", example: 70, description: "Here you have to use a valid Restaurant id"),
+                        new OA\Property(property: "clientId", type: "int", example: 70, description: "Here you have to use a valid User id"),
                     ],
                     type: "object"
                 )
@@ -118,8 +118,8 @@ final class reservationController extends AbstractController
                         new OA\Property(property: "guestNumber", type: "int", example: 60),
                         new OA\Property(property: "date", type: "string", example: "Date of the reservation"),
                         new OA\Property(property: "hour", type: "string", example: "Hour of the reservation"),
-                        new OA\Property(property: "restaurantId", type: "int", example: 54, description: "Here you have to use a valid Restaurant id"),
-                        new OA\Property(property: "clientId", type: "int", example: 54, description: "Here you have to use a valid User id"),
+                        new OA\Property(property: "restaurantId", type: "int", example: 70, description: "Here you have to use a valid Restaurant id"),
+                        new OA\Property(property: "clientId", type: "int", example: 70, description: "Here you have to use a valid User id"),
                     ],
                     type: "object"
                 )

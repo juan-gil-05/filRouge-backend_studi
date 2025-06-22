@@ -17,56 +17,66 @@ use Symfony\Component\Serializer\Attribute\Groups;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
-    #[Groups(["Restaurant:read", "Reservation:read"])]
+    #[Groups(["Restaurant:read", "Reservation:read", "User:read"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["Restaurant:read", "Reservation:read"])]
+    #[Groups(["Restaurant:read", "Reservation:read", "User:read"])]
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
+    #[Groups(["User:read"])]
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
     private array $roles = [];
 
+    #[Groups(["User:read"])]
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
     private ?string $password = null;
 
-    #[Groups(["Restaurant:read", "Reservation:read"])]
+    #[Groups(["User:read"])]
     #[ORM\Column(length: 255)]
     private ?string $apiToken;
 
+    #[Groups(["User:read", "Restaurant:read", "Reservation:read",])]
     #[ORM\Column(length: 64)]
     private ?string $firstName = null;
 
+    #[Groups(["User:read"])]
     #[ORM\Column(length: 64)]
     private ?string $lastName = null;
 
+    #[Groups(["User:read"])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $guestNumber = null;
 
+    #[Groups(["User:read"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $allergy = null;
 
+    #[Groups(["User:read"])]
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[Groups(["User:read"])]
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[Groups(["User:read"])]
     /**
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'client', orphanRemoval: true)]
     private Collection $reservations;
 
+    #[Groups(["User:read"])]
     /**
      * @var Collection<int, Restaurant>
      */
