@@ -2,21 +2,20 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\Picture;
-use App\Entity\Restaurant;
+use App\Entity\Category;
 use App\Entity\User;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 
-class PictureControllerTest extends WebTestCase
+class CategoryControllerTest extends WebTestCase
 {
     private $databaseTool;
     private \Doctrine\Common\DataFixtures\ReferenceRepository $referenceRepository;
     private KernelBrowser $client;
     private string $apiToken;
-    private int $pictureId;
+    private int $categoryId;
 
     // Initial function to set up the test client with user registration and login in order to get teh Api Token  
     protected function setUp(): void
@@ -30,8 +29,7 @@ class PictureControllerTest extends WebTestCase
 
         $fixtures = $this->databaseTool->loadFixtures([
             \App\DataFixtures\UserFixtures::class,
-            \App\DataFixtures\RestaurantFixtures::class,
-            \App\DataFixtures\PictureFixtures::class
+            \App\DataFixtures\CategoryFixtures::class
         ]);
         // Repository to get the data from the fixture
         $this->referenceRepository = $fixtures->getReferenceRepository();
@@ -40,16 +38,16 @@ class PictureControllerTest extends WebTestCase
 
         $this->apiToken = $userData->getApiToken();
         
-        $pictureData = $this->referenceRepository->getReference("picture1", Picture::class);
+        $categoryData = $this->referenceRepository->getReference("category1", Category::class);
 
-        $this->pictureId = $pictureData->getId();
+        $this->categoryId = $categoryData->getId();
     }
 
     public function testShowRestaurantSuccesful(): void
     {
         $this->client->request(
             "Get",
-            "/api/picture/{$this->pictureId}",
+            "/api/category/{$this->categoryId}",
             [],
             [],
             // To send the api token of the user
@@ -59,6 +57,7 @@ class PictureControllerTest extends WebTestCase
         );
 
         $this->assertResponseIsSuccessful();
+
     }
 
     public function testEditRestaurantSuccesful(): void
@@ -67,7 +66,7 @@ class PictureControllerTest extends WebTestCase
 
         $this->client->request(
             "Put",
-            "/api/picture/{$this->pictureId}",
+            "/api/category/{$this->categoryId}",
             [],
             [],
             // To send the api token of the user
@@ -75,8 +74,7 @@ class PictureControllerTest extends WebTestCase
                 "HTTP_X-AUTH-TOKEN" => $this->apiToken
             ],
             json_encode([
-                "name" => "NEW Picture name",
-                "slug" => "NEW Picture slug",
+                "title" => "NEW Category title",
                 "updatedAt" => $updatedAt
             ])
         );
@@ -88,7 +86,7 @@ class PictureControllerTest extends WebTestCase
     {
         $this->client->request(
             "Delete",
-            "/api/picture/{$this->pictureId}",
+            "/api/category/{$this->categoryId}",
             [],
             [],
             // To send the api token of the user

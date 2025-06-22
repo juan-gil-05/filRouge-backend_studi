@@ -131,16 +131,6 @@ final class CategoryController extends AbstractController
     #[OA\Put(
         path: '/api/category/{id}',
         summary: "Edit a Category",
-        // The parameters section is already called autommatically
-        // parameters: [
-        //     new OA\Parameter(
-        //         name: 'id',
-        //         in: 'query',
-        //         required:true,
-        //         description: 'Category ID to Edit',
-        //         schema: new OA\Schema(type: 'integer')
-        //     )
-        // ],
         requestBody: new OA\RequestBody(
             required: true,
             description: "Category data to edit",
