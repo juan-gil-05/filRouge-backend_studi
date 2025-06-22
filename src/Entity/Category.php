@@ -11,13 +11,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {
-    #[Groups(["Menu:read", "Food:read"])]
+    #[Groups(["MenuCategory:read", "FoodCategory:read"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["Menu:read", "Food:read"])]
+    #[Groups(["MenuCategory:read", "FoodCategory:read"])]
     #[ORM\Column(length: 128)]
     private ?string $title = null;
 
@@ -27,14 +27,14 @@ class Category
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[Groups(["Menu:read", "Food:read"])]
+    #[Groups(["MenuCategory:read", "FoodCategory:read"])]
     /**
      * @var Collection<int, Food>
      */
     #[ORM\ManyToMany(targetEntity: Food::class, mappedBy: 'category')]
     private Collection $food;
 
-    #[Groups(["Menu:read", "Food:read"])]
+    #[Groups(["MenuCategory:read", "FoodCategory:read"])]
     /**
      * @var Collection<int, Menu>
      */

@@ -118,7 +118,7 @@ final class CategoryController extends AbstractController
 
         if ($category) {
             // To serialize the category object, in order to send it as a JsonResponse 
-            $responseData = $this->serializer->serialize($category, 'json', ["groups" => ["Menu:read", "Food:read"]]);
+            $responseData = $this->serializer->serialize($category, 'json', ["groups" => ["MenuCategory:read", "FoodCategory:read"]]);
 
             return new JsonResponse($responseData, Response::HTTP_OK, [], true);
         }

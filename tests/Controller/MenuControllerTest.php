@@ -29,6 +29,7 @@ class MenuControllerTest extends WebTestCase
 
         $fixtures = $this->databaseTool->loadFixtures([
             \App\DataFixtures\UserFixtures::class,
+            \App\DataFixtures\RestaurantFixtures::class,
             \App\DataFixtures\MenuFixtures::class,
         ]);
         // Repository to get the data from the fixture

@@ -127,7 +127,7 @@ final class MenuController extends AbstractController
 
         if ($menu) {
             // To serialize the menu object, in order to send it as a JsonResponse 
-            $responseData = $this->serializer->serialize($menu, 'json', ['groups' => ['Menu:read']]);
+            $responseData = $this->serializer->serialize($menu, 'json', ["groups" => ["Menu:read"]]);
 
             return new JsonResponse($responseData, Response::HTTP_OK, [], true);
         }
