@@ -33,6 +33,7 @@ class Reservation
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?restaurant $restaurant = null;
 
     #[ORM\ManyToOne(inversedBy: 'reservations')]
