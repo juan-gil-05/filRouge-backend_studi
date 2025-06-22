@@ -13,6 +13,7 @@ use Faker\Factory;
 class PictureFixtures extends Fixture implements DependentFixtureInterface
 {
     public const PICTURE_NB_TUPLES = 20;
+    public const PICTURE_REFERENCE = "picture";
 
     public function load(ObjectManager $manager): void
     {
@@ -26,6 +27,7 @@ class PictureFixtures extends Fixture implements DependentFixtureInterface
                 ->setCreatedAt(new DateTimeImmutable());
 
             $manager->persist($picture);
+            $this->addReference(self::PICTURE_REFERENCE . $i, $picture);
         }
         $manager->flush();
     }

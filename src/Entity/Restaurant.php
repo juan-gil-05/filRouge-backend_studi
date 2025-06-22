@@ -61,7 +61,7 @@ class Restaurant
     private Collection $pictures;
 
     #[Groups(["Restaurant:read"])]
-    #[ORM\ManyToOne(inversedBy: 'restaurants')]
+    #[ORM\ManyToOne(inversedBy: 'restaurants', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 

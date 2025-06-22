@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Restaurant;
+use App\Entity\User;
 use App\Repository\RestaurantRepository;
+use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,13 +17,15 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Attributes as OA;
+use Symfony\Component\Serializer\Encoder\JsonDecode;
 
 #[ROUTE('api/restaurant', name: 'api_restaurant_')]
 final class RestaurantController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $manager,
-        private RestaurantRepository $repository,
+        private RestaurantRepository $restaurantRepo,
+        private UserRepository $userRepo,
         private SerializerInterface $serializer,
         private UrlGeneratorInterface $urlGenerator
     ) {}
@@ -39,7 +43,8 @@ final class RestaurantController extends AbstractController
                 properties: [
                     new OA\Property(property: "name", type: "string", example: "Quai Antique"),
                     new OA\Property(property: "description", type: "string", example: "The best restaurant"),
-                    new OA\Property(property: "maxGuest", type: "int", example: "10"),
+                    new OA\Property(property: "maxGuest", type: "int", example: 10),
+                    new OA\Property(property: "owner", type: "int", example: 54, description:"Here you have to use a valid user id"),
                 ],
                 type: "object"
             )
@@ -52,7 +57,9 @@ final class RestaurantController extends AbstractController
                     properties: [
                         new OA\Property(property: "name", type: "string", example: "Restaurant name"),
                         new OA\Property(property: "description", type: "string", example: "Restaurant description"),
-                        new OA\Property(property: "maxGuest", type: "int", example: "10"),
+                        new OA\Property(property: "maxGuest", type: "int", example: 10),
+                        new OA\Property(property: "owner", type: "int", example: 54, description:"Here you have to use a valid user id"),
+
                     ],
                     type: "object"
                 )
@@ -65,6 +72,21 @@ final class RestaurantController extends AbstractController
         $restaurant = $this->serializer->deserialize($request->getContent(), Restaurant::class, 'json');
         $restaurant->setCreatedAt(new DateTimeImmutable());
 
+        $data = json_decode($request->getContent(), true);
+        $ownerId = $data["owner"];
+
+        if (!$ownerId) {
+            return new JsonResponse(["error" => "owner ID is required"], Response::HTTP_BAD_GATEWAY);
+        }
+
+        $ownerData = $this->userRepo->find($ownerId);
+
+        if (!$ownerData) {
+            return new JsonResponse(["error" => "owner not found"], Response::HTTP_NOT_FOUND);
+        }
+
+        $restaurant->setOwner($ownerData);
+
         // To save data into DB
         $this->manager->persist($restaurant);
 
@@ -72,7 +94,7 @@ final class RestaurantController extends AbstractController
         $this->manager->flush();
 
         // To serialize the object into Json, and send it as the response
-        $responseData = $this->serializer->serialize($restaurant, 'json');
+        $responseData = $this->serializer->serialize($restaurant, 'json', ['groups' => ['Restaurant:read']]);
         // To redirect the client into the page with the new restaurant
         $location = $this->urlGenerator->generate(
             "api_restaurant_show",
@@ -120,7 +142,7 @@ final class RestaurantController extends AbstractController
     public function show($id): JsonResponse
     {
         // To search the object by ID
-        $restaurant = $this->repository->findOneBy(["id" => $id]);
+        $restaurant = $this->restaurantRepo->findOneBy(["id" => $id]);
 
         if ($restaurant) {
             // To serialize the Restaurant object, in order to send it as a JsonResponse 
@@ -181,7 +203,7 @@ final class RestaurantController extends AbstractController
     public function edit($id, Request $request): Response
     {
         // To search the object by ID
-        $restaurant = $this->repository->findOneBy(["id" => $id]);
+        $restaurant = $this->restaurantRepo->findOneBy(["id" => $id]);
 
         if ($restaurant) {
             // To get the content sent and deserialize it into a Restaurant object
@@ -233,7 +255,7 @@ final class RestaurantController extends AbstractController
     public function delete($id): Response
     {
 
-        $restaurant = $this->repository->findOneBy(["id" => $id]);
+        $restaurant = $this->restaurantRepo->findOneBy(["id" => $id]);
 
         if (!$restaurant) {
             throw $this->createNotFoundException("No Restaurant found for {$id} id");

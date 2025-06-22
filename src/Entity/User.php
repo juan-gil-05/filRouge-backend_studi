@@ -40,7 +40,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Groups(["Restaurant:read"])]
-
     #[ORM\Column(length: 255)]
     private ?string $apiToken;
 
