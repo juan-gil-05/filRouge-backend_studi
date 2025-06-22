@@ -5,37 +5,47 @@ namespace App\Entity;
 use App\Repository\ReservationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 class Reservation
 {
+    #[Groups(["Reservation:read"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["Reservation:read"])]
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $guestNumber = null;
 
+    #[Groups(["Reservation:read"])]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $hour = null;
+    #[Groups(["Reservation:read"])]
+    #[ORM\Column(length: 10)]
+    private ?string $hour = null;
 
+    #[Groups(["Reservation:read"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $allergy = null;
 
+    #[Groups(["Reservation:read"])]
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[Groups(["Reservation:read"])]
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[Groups(["Reservation:read"])]
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?restaurant $restaurant = null;
 
+    #[Groups(["Reservation:read"])]
     #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $client = null;
@@ -69,12 +79,12 @@ class Reservation
         return $this;
     }
 
-    public function getHour(): ?\DateTime
+    public function getHour(): ?string
     {
         return $this->hour;
     }
 
-    public function setHour(\DateTime $hour): static
+    public function setHour(string $hour): static
     {
         $this->hour = $hour;
 
