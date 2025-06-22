@@ -124,7 +124,7 @@ final class FoodController extends AbstractController
 
         if ($food) {
             // To serialize the food object, in order to send it as a JsonResponse 
-            $responseData = $this->serializer->serialize($food, 'json');
+            $responseData = $this->serializer->serialize($food, 'json', ["groups" => ["Food:read"]]);
 
             return new JsonResponse($responseData, Response::HTTP_OK, [], true);
         }
@@ -137,16 +137,6 @@ final class FoodController extends AbstractController
     #[OA\Put(
         path: '/api/food/{id}',
         summary: "Edit a Food",
-        // The parameters section is already called autommatically
-        // parameters: [
-        //     new OA\Parameter(
-        //         name: 'id',
-        //         in: 'query',
-        //         required:true,
-        //         description: 'Food ID to Edit',
-        //         schema: new OA\Schema(type: 'integer')
-        //     )
-        // ],
         requestBody: new OA\RequestBody(
             required: true,
             description: "Food data to edit",
