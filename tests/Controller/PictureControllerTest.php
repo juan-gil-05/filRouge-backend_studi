@@ -69,7 +69,7 @@ class PictureControllerTest extends WebTestCase
 
         $this->client->request(
             "Put",
-            "/api/restaurant/{$this->pictureId}",
+            "/api/picture/{$this->pictureId}",
             [],
             [],
             // To send the api token of the user
@@ -77,9 +77,8 @@ class PictureControllerTest extends WebTestCase
                 "HTTP_X-AUTH-TOKEN" => $this->apiToken
             ],
             json_encode([
-                "name" => "NEW Restaurant name",
-                "description" => "NEW Restaurant description",
-                "MaxGuest" => 15,
+                "name" => "NEW Picture name",
+                "slug" => "NEW Picture slug",
                 "updatedAt" => $updatedAt
             ])
         );
@@ -91,7 +90,7 @@ class PictureControllerTest extends WebTestCase
     {
         $this->client->request(
             "Delete",
-            "/api/restaurant/{$this->pictureId}",
+            "/api/picture/{$this->pictureId}",
             [],
             [],
             // To send the api token of the user
