@@ -17,6 +17,7 @@ class ReservationFixtures extends Fixture implements DependentFixtureInterface
 {
 
     public const RESERVATION_NB_TUPLES = 20;
+    public const RESERVATION_REFERENCE = "reservation";
 
     public function load(ObjectManager $manager): void
     {
@@ -32,6 +33,7 @@ class ReservationFixtures extends Fixture implements DependentFixtureInterface
                 ->setCreatedAt(new DateTimeImmutable());
 
             $manager->persist($reservation);
+            $this->addReference(self::RESERVATION_REFERENCE . $i, $reservation);
         }
 
         $manager->flush();
