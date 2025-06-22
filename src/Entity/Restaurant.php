@@ -12,13 +12,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: RestaurantRepository::class)]
 class Restaurant
 {
-    #[Groups(["Restaurant:read", "Picture:read", "Menu:read"])]
+    #[Groups(["Restaurant:read", "Picture:read", "Menu:read", "Reservation:read"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["Restaurant:read", "Picture:read", "Menu:read"])]
+    #[Groups(["Restaurant:read", "Picture:read", "Menu:read", "Reservation:read"])]
     #[ORM\Column(length: 128)]
     private ?string $name = null;
 
@@ -38,7 +38,7 @@ class Restaurant
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $maxGuest = null;
 
-    #[Groups(["Restaurant:read", "Picture:read", "Menu:read"])]
+    #[Groups(["Restaurant:read", "Picture:read", "Menu:read", "Reservation:read"])]
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 

@@ -17,13 +17,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
-    #[Groups(["Restaurant:read"])]
+    #[Groups(["Restaurant:read", "Reservation:read"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["Restaurant:read"])]
+    #[Groups(["Restaurant:read", "Reservation:read"])]
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
@@ -39,7 +39,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[Groups(["Restaurant:read"])]
+    #[Groups(["Restaurant:read", "Reservation:read"])]
     #[ORM\Column(length: 255)]
     private ?string $apiToken;
 
