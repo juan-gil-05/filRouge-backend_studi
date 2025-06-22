@@ -7,36 +7,45 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 class Menu
 {
+    #[Groups(["Menu:read"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["Menu:read"])]
     #[ORM\Column(length: 128)]
     private ?string $title = null;
 
+    #[Groups(["Menu:read"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    #[Groups(["Menu:read"])]
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
     private ?string $price = null;
 
+    #[Groups(["Menu:read"])]
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[Groups(["Menu:read"])]
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[Groups(["Menu:read"])]
     /**
      * @var Collection<int, Category>
      */
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'menus')]
     private Collection $category;
 
+    #[Groups(["Menu:read"])]
     #[ORM\ManyToOne(inversedBy: 'menus')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Restaurant $restaurant = null;

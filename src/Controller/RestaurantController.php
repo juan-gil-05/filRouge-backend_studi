@@ -17,7 +17,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Attributes as OA;
-use Symfony\Component\Serializer\Encoder\JsonDecode;
 
 #[ROUTE('api/restaurant', name: 'api_restaurant_')]
 final class RestaurantController extends AbstractController
