@@ -76,7 +76,7 @@ final class RestaurantController extends AbstractController
         $ownerId = $data["owner"];
 
         if (!$ownerId) {
-            return new JsonResponse(["error" => "owner ID is required"], Response::HTTP_BAD_GATEWAY);
+            return new JsonResponse(["error" => "owner ID is required"], Response::HTTP_BAD_REQUEST);
         }
 
         $ownerData = $this->userRepo->find($ownerId);

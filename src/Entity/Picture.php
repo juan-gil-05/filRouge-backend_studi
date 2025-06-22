@@ -4,27 +4,34 @@ namespace App\Entity;
 
 use App\Repository\PictureRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: PictureRepository::class)]
 class Picture
 {
+    #[Groups(["Picture:read", "Restaurant:read"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["Picture:read", "Restaurant:read"])]
     #[ORM\Column(length: 128)]
     private ?string $name = null;
 
+    #[Groups(["Picture:read"])]
     #[ORM\Column(length: 36)]
     private ?string $slug = null;
 
+    #[Groups(["Picture:read"])]
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[Groups(["Picture:read"])]
     #[ORM\Column(nullable:true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[Groups(["Picture:read"])]
     #[ORM\ManyToOne(inversedBy: 'pictures')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Restaurant $restaurant = null;
