@@ -31,6 +31,8 @@ web:
 mounts:
     "/var/cache": { source: local, source_path: var/cache }
     
+relationships: 
+    database: mysql:10.6
 
 hooks:
     build: |
