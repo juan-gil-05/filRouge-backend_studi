@@ -16,7 +16,8 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Attributes as OA;
-
+use Symfony\Component\Security\Http\AccessToken\HeaderAccessTokenExtractor;
+use Symfony\Component\VarDumper\VarDumper;
 
 #[Route("/api", name: 'app_api_')]
 final class SecurityController extends AbstractController
@@ -136,15 +137,6 @@ final class SecurityController extends AbstractController
     #[OA\Get(
         path: '/api/account/profil',
         summary: "Show User",
-        parameters: [
-            new OA\Parameter(
-                name: 'firstName',
-                in: 'query',
-                required: true,
-                description: "Find user by User first name",
-                schema: new OA\Schema(type: 'string')
-            )
-        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -173,9 +165,9 @@ final class SecurityController extends AbstractController
     )]
     public function profil(Request $request): JsonResponse
     {
-        $firstName = $request->query->get('firstName');
+        $apiToken = $request->headers->get('X-AUTH-TOKEN');
 
-        $user = $this->repository->findOneBy(["firstName" => $firstName]);
+        $user = $this->repository->findOneBy(["apiToken" => $apiToken]);
 
         if ($user) {
             $responseData = $this->serializer->serialize($user, 'json', ["groups" => ["User:read"]]);
