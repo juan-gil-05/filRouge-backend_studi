@@ -83,7 +83,7 @@ final class FoodController extends AbstractController
         return new JsonResponse($responseData, Response::HTTP_CREATED, ["Location" => $location], true);
     }
 
-    // Read
+    // Read By id
     #[ROUTE("/{id}", name: 'show', methods: 'GET')]
     #[OA\Get(
         path: '/api/food/{id}',
@@ -121,6 +121,45 @@ final class FoodController extends AbstractController
     {
         // To search the object by ID
         $food = $this->repository->findOneBy(["id" => $id]);
+
+        if ($food) {
+            // To serialize the food object, in order to send it as a JsonResponse 
+            $responseData = $this->serializer->serialize($food, 'json', ["groups" => ["Food:read"]]);
+
+            return new JsonResponse($responseData, Response::HTTP_OK, [], true);
+        }
+        // If it wasn't found
+        return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+    }
+
+    // Read all
+    #[ROUTE("/all", name: 'show', methods: 'GET')]
+    #[OA\Get(
+        path: '/api/food/all',
+        summary: "Show all Foods",
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Food found",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "name", type: "string", example: "Food name"),
+                        new OA\Property(property: "description", type: "string", example: "Food description"),
+                        new OA\Property(property: "price", type: "string", example: "1.50"),
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Food not found",
+            )
+        ]
+    )]
+    public function showAll(): JsonResponse
+    {
+        // To search the object by ID
+        $food = $this->repository->findAll();
 
         if ($food) {
             // To serialize the food object, in order to send it as a JsonResponse 
