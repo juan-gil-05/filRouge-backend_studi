@@ -96,7 +96,46 @@ final class MenuController extends AbstractController
         return new JsonResponse($responseData, Response::HTTP_CREATED, [], true);
     }
 
-    // Read
+    // Read all
+    #[ROUTE("/all", name: 'show all', methods: 'GET')]
+    #[OA\Get(
+        path: '/api/menu/all',
+        summary: "Show all the menus",
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Menus found",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "title", type: "string", example: "Menu name"),
+                        new OA\Property(property: "description", type: "string", example: "Menu description"),
+                        new OA\Property(property: "price", type: "string", example: "Menu price"),
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Menu not found",
+            )
+        ]
+    )]
+    public function showAll(): JsonResponse
+    {
+        // To search the object by ID
+        $menu = $this->menuRepo->findAll();
+
+        if ($menu) {
+            // To serialize the menu object, in order to send it as a JsonResponse 
+            $responseData = $this->serializer->serialize($menu, 'json', ["groups" => ["Menu:read"]]);
+
+            return new JsonResponse($responseData, Response::HTTP_OK, [], true);
+        }
+        // If it wasn't found
+        return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+    }
+
+    // Read by id
     #[ROUTE("/{id}", name: 'show', methods: 'GET')]
     #[OA\Get(
         path: '/api/menu/{id}',
